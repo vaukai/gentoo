@@ -5,4 +5,9 @@
 		<email>java@gentoo.org</email>
 		<name>Java</name>
 	</maintainer>
+	<upstream>
+		<remote-id type="github">unicode-org/icu</remote-id>
+		<doc>https://unicode-org.github.io/icu/userguide/</doc>
+		<bugs-to>https://unicode-org.atlassian.net/projects/ICU</bugs-to>
+	</upstream>
 </pkgmetadata>
