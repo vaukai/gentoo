@@ -32,6 +32,13 @@
 
 #--- END OF EXAMPLES ---
 
+# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2021-06-13)
+# after removal from java-utils-2.eclass there will be
+# no other non-masked consumer, removal in 30 days
+# see bug: https://bugs.gentoo.org/786093
+dev-java/gnu-classpath
+dev-java/jamvm
+
 # Joonas Niilola <juippis@gentoo.org> (2021-06-12)
 # A library without consumers, old dep of tree-cleaned gnome-mplayer,
 # EAPI-5. Removal in ~30 days. #776898
