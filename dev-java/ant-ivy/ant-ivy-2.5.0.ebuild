@@ -6,8 +6,9 @@
 
 EAPI=7
 
-JAVA_PKG_IUSE="doc source"
+JAVA_PKG_IUSE="doc source test"
 MAVEN_ID="org.apache.ivy:ivy:2.5.0"
+JAVA_TESTING_FRAMEWORKS="junit-4"
 
 inherit java-pkg-2 java-pkg-simple
 
@@ -41,7 +42,15 @@ CDEPEND="
 	dev-java/jakarta-oro:2.0
 	dev-java/jsch:0
 	dev-java/jsch-agent-proxy:0
-"
+	test? (
+		dev-java/ant-junit:0
+		dev-java/ant-junit4:0
+		dev-java/ant-junitlauncher:0
+		dev-java/ant-testutil:0
+		dev-java/hamcrest-core:1.3
+		dev-java/hamcrest-library:1.3
+		dev-java/xmlunit:1
+	)"
 DEPEND="${CDEPEND}
 	>=virtual/jdk-1.8:*"
 RDEPEND="${CDEPEND}
@@ -56,13 +65,61 @@ JAVA_MAIN_CLASS="org.apache.ivy.Main"
 JAVA_SRC_DIR="src/java"
 JAVA_RESOURCE_DIRS="resources"
 
+JAVA_TEST_GENTOO_CLASSPATH="ant-junit,ant-junit4,ant-junitlauncher,ant-testutil,hamcrest-core-1.3,hamcrest-library-1.3,junit-4,xmlunit-1"
+JAVA_TEST_SRC_DIR="test/java"
+JAVA_TEST_RESOURCE_DIRS="testresources"
+#	JAVA_TEST_EXCLUDES=( )
+
 src_prepare() {
 	default
-	java-pkg_clean
+#	java-pkg_clean # Most tests come in jar files
+
 	mkdir --parents "${JAVA_RESOURCE_DIRS}/META-INF" || die
-	cp -r "${JAVA_SRC_DIR}"/* "${JAVA_RESOURCE_DIRS}" || die
 	cp NOTICE LICENSE "${JAVA_RESOURCE_DIRS}/META-INF" || die
+	cp -r "${JAVA_SRC_DIR}"/* "${JAVA_RESOURCE_DIRS}" || die
 	find "${JAVA_RESOURCE_DIRS}" -type f -name '*.java' -exec rm -rf {} + || die
+
+	mkdir "${JAVA_TEST_RESOURCE_DIRS}" || die
+	cp -r "test" "${JAVA_TEST_RESOURCE_DIRS}" || die
+	find "${JAVA_TEST_RESOURCE_DIRS}" -type f -name '*.java' -exec rm -rf {} + || die
+
+	# JUnit version 4.13.2-SNAPSHOT
+	# Exception in thread "main" java.lang.ExceptionInInitializerError
+	#         at java.base/java.lang.Class.forName0(Native Method)
+	#         at java.base/java.lang.Class.forName(Class.java:398)
+	#         at org.junit.internal.Classes.getClass(Classes.java:42)
+	#         at org.junit.internal.Classes.getClass(Classes.java:27)
+	#         at org.junit.runner.JUnitCommandLineParseResult.parseParameters(JUnitCommandLineParseResult.java:98)
+	#         at org.junit.runner.JUnitCommandLineParseResult.parseArgs(JUnitCommandLineParseResult.java:50)
+	#         at org.junit.runner.JUnitCommandLineParseResult.parse(JUnitCommandLineParseResult.java:44)
+	#         at org.junit.runner.JUnitCore.runMain(JUnitCore.java:72)
+	#         at org.junit.runner.JUnitCore.main(JUnitCore.java:36)
+	# Caused by: java.lang.NullPointerException
+	#         at java.base/java.io.Reader.<init>(Reader.java:167)
+	#         at java.base/java.io.InputStreamReader.<init>(InputStreamReader.java:72)
+	#         at org.apache.ivy.plugins.parser.m2.PomModuleDescriptorWriterTest.<clinit>(PomModuleDescriptorWriterTest.java:42)
+	#         ... 9 more
+	#  * ERROR: dev-java/ant-ivy-2.5.0::gentoo failed (test phase):
+	rm test/java/org/apache/ivy/plugins/parser/m2/PomModuleDescriptorWriterTest.java || die
+
+	# JUnit version 4.13.2-SNAPSHOT
+	# Exception in thread "main" java.lang.ExceptionInInitializerError
+	#         at java.base/java.lang.Class.forName0(Native Method)
+	#         at java.base/java.lang.Class.forName(Class.java:398)
+	#         at org.junit.internal.Classes.getClass(Classes.java:42)
+	#         at org.junit.internal.Classes.getClass(Classes.java:27)
+	#         at org.junit.runner.JUnitCommandLineParseResult.parseParameters(JUnitCommandLineParseResult.java:98)
+	#         at org.junit.runner.JUnitCommandLineParseResult.parseArgs(JUnitCommandLineParseResult.java:50)
+	#         at org.junit.runner.JUnitCommandLineParseResult.parse(JUnitCommandLineParseResult.java:44)
+	#         at org.junit.runner.JUnitCore.runMain(JUnitCore.java:72)
+	#         at org.junit.runner.JUnitCore.main(JUnitCore.java:36)
+	# Caused by: java.lang.NullPointerException
+	#         at java.base/java.io.Reader.<init>(Reader.java:167)
+	#         at java.base/java.io.InputStreamReader.<init>(InputStreamReader.java:72)
+	#         at org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorWriterTest.<clinit>(XmlModuleDescriptorWriterTest.java:53)
+	#         ... 9 more
+	#  * ERROR: dev-java/ant-ivy-2.5.0::gentoo failed (test phase):
+	rm test/java/org/apache/ivy/plugins/parser/xml/XmlModuleDescriptorWriterTest.java || die
 }
 
 src_install() {
