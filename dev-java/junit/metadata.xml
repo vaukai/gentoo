@@ -9,4 +9,15 @@
 		<remote-id type="github">junit-team/junit4</remote-id>
 		<remote-id type="sourceforge">junit</remote-id>
 	</upstream>
+	<use>
+		<flag name="vintage">
+			Builds the junit-vintage-engine
+		</flag>
+		<flag name="migrationsupport">
+			Builds the junit-jupiter-migrationsupport module
+		</flag>
+		<flag name="jupiter">
+			Builds the junit-jupiter-params and junit-jupiter modules
+		</flag>
+	</use>
 </pkgmetadata>
