@@ -7,7 +7,7 @@ JAVA_PKG_IUSE="doc source test"
 MAVEN_ID="com.miglayout:miglayout-core:5.0 com.miglayout:miglayout-swing:5.0"
 JAVA_TESTING_FRAMEWORKS="junit-4"
 
-inherit java-pkg-2 java-pkg-simple
+inherit java-pkg-2 java-pkg-simple virtualx
 
 DESCRIPTION="MiGLayout - Java Layout Manager for Swing, SWT and JavaFX"
 HOMEPAGE="https://miglayout.com/"
@@ -21,6 +21,7 @@ KEYWORDS="~amd64 ~x86"
 RDEPEND=">=virtual/jre-1.8:*"
 DEPEND=">=virtual/jdk-1.8:*"
 
+JAVA_TEST_EXTRA_ARGS=( -Djava.awt.headless=false )
 JAVA_TEST_GENTOO_CLASSPATH="junit-4"
 JAVA_TEST_RUN_ONLY="net.miginfocom.swing.MigLayoutTest"
 JAVA_TEST_SRC_DIR="swing/src/test/java"
@@ -52,15 +53,7 @@ src_compile() {
 }
 
 src_test() {
-	# There was 1 failure:
-	# 1) testDPIScaling(net.miginfocom.swing.MigLayoutTest)
-	# java.awt.HeadlessException
-	#         at java.desktop/sun.awt.HeadlessToolkit.getScreenResolution(HeadlessToolkit.java:122)
-	#         at net.miginfocom.swing.MigLayoutTest.testDPIScaling(MigLayoutTest.java:28)
-	sed \
-		-e '/import org.junit.Test/a import org.junit.Ignore;' \
-		-e '/testDPIScaling()/i @Ignore' \
-		-i swing/src/test/java/net/miginfocom/swing/MigLayoutTest.java || die
+	virtx java-pkg-simple_src_test
 }
 
 src_install() {
