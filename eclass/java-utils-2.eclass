@@ -1,4 +1,4 @@
-# Copyright 2004-2023 Gentoo Authors
+# Copyright 2004-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: java-utils-2.eclass
@@ -64,21 +64,6 @@ JAVA_PKG_ALLOW_VM_CHANGE=${JAVA_PKG_ALLOW_VM_CHANGE:="yes"}
 # Example: use openjdk-11 to emerge foo:
 # @CODE
 #	JAVA_PKG_FORCE_VM=openjdk-11 emerge foo
-# @CODE
-
-# @ECLASS_VARIABLE: JAVA_PKG_NO_CLEAN
-# @DEFAULT_UNSET
-# @DESCRIPTION:
-# An array of expressions to match *.class or *.jar files in order to  protect
-# them against deletion by java-pkg_clean.
-#
-# @CODE
-#	JAVA_PKG_NO_CLEAN=(
-#		"*/standard.jar"
-#		"*/launch4j.jar"
-#		"*/apps/jetty/apache-tomcat*"
-#		"*/lib/jetty*"
-#	)
 # @CODE
 
 # @ECLASS_VARIABLE: JAVA_PKG_WANT_BUILD_VM
@@ -2943,13 +2928,11 @@ is-java-strict() {
 # @FUNCTION: java-pkg_clean
 # @DESCRIPTION:
 # Java package cleaner function. This will remove all *.class and *.jar
-# files, except those specified by expressions in JAVA_PKG_NO_CLEAN.
+# files, removing any bundled dependencies.
 java-pkg_clean() {
-	NO_DELETE=()
-	for keep in ${JAVA_PKG_NO_CLEAN[@]}; do
-		NO_DELETE+=( '!' '-wholename' ${keep} )
-	done
-	find "${@}" '(' -name '*.class' -o -name '*.jar' ${NO_DELETE[@]} ')' -type f -delete -print || die
+	if [[ -z "${JAVA_PKG_NO_CLEAN}" ]]; then
+		find "${@}" '(' -name '*.class' -o -name '*.jar' ')' -type f -delete -print || die
+	fi
 }
 
 # @FUNCTION: java-pkg_gen-cp
