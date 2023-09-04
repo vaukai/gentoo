@@ -1,0 +1,15 @@
+This test would need kotlin which we do not have.
+./src/test/kotlin/org/testng/BasicTest.kt
+
+--- a/testng-core/src/test/resources/testng.xml
++++ b/testng-core/src/test/resources/testng.xml
+@@ -989,9 +989,4 @@
+     </classes>
+   </test>
+ 
+-  <test name="Kotlin">
+-    <classes>
+-      <class name="org.testng.BasicTest"/>
+-    </classes>
+-  </test>
+ </suite>
