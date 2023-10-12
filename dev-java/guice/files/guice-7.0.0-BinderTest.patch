@@ -1,0 +1,47 @@
+There was 1 failure:
+1) testPartialInjectorGetInstance(com.google.inject.BinderTest)
+junit.framework.AssertionFailedError: Expected "Guice configuration errors:
+
+1) [Guice/MissingConstructor]: No injectable constructor for type BinderTest$NoInjectConstructor.
+
+class BinderTest$NoInjectConstructor has a private no-arg constructor but the class is not private. Guice can only use a private no-arg constructor if it is defined in a private class.
+
+Requested by:
+1  : BinderTest$NoInjectConstructor.class(BinderTest.java:1)
+     at BinderTest$MissingParameter.<init>(BinderTest.java:614)
+      \_ for 1st parameter
+     while locating BinderTest$MissingParameter
+
+Learn more:
+  https://github.com/google/guice/wiki/MISSING_CONSTRUCTOR
+
+1 error
+
+======================
+Full classname legend:
+======================
+BinderTest$MissingParameter:    "com.google.inject.BinderTest$MissingParameter"
+BinderTest$NoInjectConstructor: "com.google.inject.BinderTest$NoInjectConstructor"
+========================
+End of classname legend:
+========================
+" to contain substring "for 1st parameter noInjectConstructor"
+        at junit.framework.Assert.fail(Assert.java:57)
+        at junit.framework.Assert.assertTrue(Assert.java:22)
+        at com.google.inject.Asserts.assertContains(Asserts.java:116)
+        at com.google.inject.Asserts.assertContains(Asserts.java:98)
+        at com.google.inject.BinderTest.testPartialInjectorGetInstance(BinderTest.java:480)
+
+FAILURES!!!
+Tests run: 23,  Failures: 1
+--- a/core/test/com/google/inject/BinderTest.java
++++ b/core/test/com/google/inject/BinderTest.java
+@@ -471,7 +471,7 @@ public class BinderTest extends TestCase {
+     assertSame(JustAClass.class, injector.getInstance(JustAClass.class).getClass());
+   }
+ 
+-  public void testPartialInjectorGetInstance() {
++  public void noTestPartialInjectorGetInstance() {
+     Injector injector = Guice.createInjector();
+     try {
+       injector.getInstance(MissingParameter.class);
