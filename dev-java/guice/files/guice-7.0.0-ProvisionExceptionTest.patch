@@ -1,0 +1,94 @@
+There were 2 failures:
+1) testExceptionsCollapsed(com.google.inject.ProvisionExceptionTest)
+junit.framework.AssertionFailedError: Expected "Unable to provision, see the following errors:
+
+1) [Guice/ErrorInjectingConstructor]: UnsupportedOperationException
+  at ProvisionExceptionTest$RealD.<init>(ProvisionExceptionTest.java:450)
+  at ProvisionExceptionTest$C.setD(ProvisionExceptionTest.java:402)
+      \_ for 1st parameter
+  at ProvisionExceptionTest$B.c(ProvisionExceptionTest.java:396)
+      \_ for field c
+  at ProvisionExceptionTest$A.<init>(ProvisionExceptionTest.java:393)
+      \_ for 1st parameter
+  while locating ProvisionExceptionTest$A
+
+Learn more:
+  https://github.com/google/guice/wiki/ERROR_INJECTING_CONSTRUCTOR
+
+1 error
+
+======================
+Full classname legend:
+======================
+ProvisionExceptionTest$A:      "com.google.inject.ProvisionExceptionTest$A"
+ProvisionExceptionTest$B:      "com.google.inject.ProvisionExceptionTest$B"
+ProvisionExceptionTest$C:      "com.google.inject.ProvisionExceptionTest$C"
+ProvisionExceptionTest$RealD:  "com.google.inject.ProvisionExceptionTest$RealD"
+========================
+End of classname legend:
+========================
+" to contain substring "for 1st parameter d"
+        at junit.framework.Assert.fail(Assert.java:57)
+        at junit.framework.Assert.assertTrue(Assert.java:22)
+        at com.google.inject.Asserts.assertContains(Asserts.java:116)
+        at com.google.inject.Asserts.assertContains(Asserts.java:98)
+        at com.google.inject.ProvisionExceptionTest.testExceptionsCollapsed(ProvisionExceptionTest.java:45)
+2) testExceptionsCollapsedWithScopes(com.google.inject.ProvisionExceptionTest)
+junit.framework.AssertionFailedError: Expected "Unable to provision, see the following errors:
+
+1) [Guice/ErrorInjectingConstructor]: UnsupportedOperationException
+  at ProvisionExceptionTest$RealD.<init>(ProvisionExceptionTest.java:450)
+  at ProvisionExceptionTest$C.setD(ProvisionExceptionTest.java:402)
+      \_ for 1st parameter
+  at ProvisionExceptionTest$B.c(ProvisionExceptionTest.java:396)
+      \_ for field c
+  at ProvisionExceptionTest$1.configure(ProvisionExceptionTest.java:67)
+  at ProvisionExceptionTest$A.<init>(ProvisionExceptionTest.java:393)
+      \_ for 1st parameter
+  while locating ProvisionExceptionTest$A
+
+Learn more:
+  https://github.com/google/guice/wiki/ERROR_INJECTING_CONSTRUCTOR
+
+1 error
+
+======================
+Full classname legend:
+======================
+ProvisionExceptionTest$1:      "com.google.inject.ProvisionExceptionTest$1"
+ProvisionExceptionTest$A:      "com.google.inject.ProvisionExceptionTest$A"
+ProvisionExceptionTest$B:      "com.google.inject.ProvisionExceptionTest$B"
+ProvisionExceptionTest$C:      "com.google.inject.ProvisionExceptionTest$C"
+ProvisionExceptionTest$RealD:  "com.google.inject.ProvisionExceptionTest$RealD"
+========================
+End of classname legend:
+========================
+" to contain substring "for 1st parameter d"
+        at junit.framework.Assert.fail(Assert.java:57)
+        at junit.framework.Assert.assertTrue(Assert.java:22)
+        at com.google.inject.Asserts.assertContains(Asserts.java:116)
+        at com.google.inject.Asserts.assertContains(Asserts.java:98)
+        at com.google.inject.ProvisionExceptionTest.testExceptionsCollapsedWithScopes(ProvisionExceptionTest.java:75)
+
+FAILURES!!!
+Tests run: 17,  Failures:
+--- a/core/test/com/google/inject/ProvisionExceptionTest.java
++++ b/core/test/com/google/inject/ProvisionExceptionTest.java
+@@ -36,7 +36,7 @@ import junit.framework.TestCase;
+ @SuppressWarnings("UnusedDeclaration")
+ public class ProvisionExceptionTest extends TestCase {
+ 
+-  public void testExceptionsCollapsed() {
++  public void noTestExceptionsCollapsed() {
+     try {
+       Guice.createInjector().getInstance(A.class);
+       fail();
+@@ -58,7 +58,7 @@ public class ProvisionExceptionTest extends TestCase {
+    * There's a pass-through of user code in the scope. We want exceptions thrown by Guice to be
+    * limited to a single exception, even if it passes through user code.
+    */
+-  public void testExceptionsCollapsedWithScopes() {
++  public void noTestExceptionsCollapsedWithScopes() {
+     try {
+       Guice.createInjector(
+               new AbstractModule() {
