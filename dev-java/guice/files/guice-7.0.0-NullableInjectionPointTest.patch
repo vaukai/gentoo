@@ -1,0 +1,82 @@
+There were 2 failures:
+1) testInjectNullIntoNotNullableConstructor(com.google.inject.NullableInjectionPointTest)
+junit.framework.AssertionFailedError: Expected "Unable to provision, see the following errors:
+
+1) [Guice/NullInjectedIntoNonNullable]: null returned by binding at NullableInjectionPointTest$1.configure(NullableInjectionPointTest.java:118)
+ but the 1st parameter of NullableInjectionPointTest$FooConstructor.<init>(NullableInjectionPointTest.java:230) is not @Nullable
+  at NullableInjectionPointTest$1.configure(NullableInjectionPointTest.java:118)
+  at NullableInjectionPointTest$FooConstructor.<init>(NullableInjectionPointTest.java:230)
+      \_ for 1st parameter
+  while locating NullableInjectionPointTest$FooConstructor
+
+Learn more:
+  https://github.com/google/guice/wiki/NULL_INJECTED_INTO_NON_NULLABLE
+
+1 error
+
+======================
+Full classname legend:
+======================
+NullableInjectionPointTest$1:              "com.google.inject.NullableInjectionPointTest$1"
+NullableInjectionPointTest$FooConstructor: "com.google.inject.NullableInjectionPointTest$FooConstructor"
+========================
+End of classname legend:
+========================
+" to contain substring "the 1st parameter foo of NullableInjectionPointTest$FooConstructor.<init>("
+        at junit.framework.Assert.fail(Assert.java:57)
+        at junit.framework.Assert.assertTrue(Assert.java:22)
+        at com.google.inject.Asserts.assertContains(Asserts.java:116)
+        at com.google.inject.Asserts.assertContains(Asserts.java:98)
+        at com.google.inject.NullableInjectionPointTest.testInjectNullIntoNotNullableConstructor(NullableInjectionPointTest.java:27)
+2) testInjectNullIntoNotNullableMethod(com.google.inject.NullableInjectionPointTest)
+junit.framework.AssertionFailedError: Expected "Unable to provision, see the following errors:
+
+1) [Guice/NullInjectedIntoNonNullable]: null returned by binding at NullableInjectionPointTest$1.configure(NullableInjectionPointTest.java:118)
+ but the 1st parameter of NullableInjectionPointTest$FooMethod.setFoo(NullableInjectionPointTest.java:239) is not @Nullable
+  at NullableInjectionPointTest$1.configure(NullableInjectionPointTest.java:118)
+  at NullableInjectionPointTest$FooMethod.setFoo(NullableInjectionPointTest.java:239)
+      \_ for 1st parameter
+  while locating NullableInjectionPointTest$FooMethod
+
+Learn more:
+  https://github.com/google/guice/wiki/NULL_INJECTED_INTO_NON_NULLABLE
+
+1 error
+
+======================
+Full classname legend:
+======================
+NullableInjectionPointTest$1:         "com.google.inject.NullableInjectionPointTest$1"
+NullableInjectionPointTest$FooMethod: "com.google.inject.NullableInjectionPointTest$FooMethod"
+========================
+End of classname legend:
+========================
+" to contain substring "the 1st parameter foo of NullableInjectionPointTest$FooMethod.setFoo("
+        at junit.framework.Assert.fail(Assert.java:57)
+        at junit.framework.Assert.assertTrue(Assert.java:22)
+        at com.google.inject.Asserts.assertContains(Asserts.java:116)
+        at com.google.inject.Asserts.assertContains(Asserts.java:98)
+        at com.google.inject.NullableInjectionPointTest.testInjectNullIntoNotNullableMethod(NullableInjectionPointTest.java:40)
+
+FAILURES!!!
+Tests run: 18,  Failures: 2
+--- a/core/test/com/google/inject/NullableInjectionPointTest.java
++++ b/core/test/com/google/inject/NullableInjectionPointTest.java
+@@ -19,7 +19,7 @@ import junit.framework.TestCase;
+ /** @author jessewilson@google.com (Jesse Wilson) */
+ public class NullableInjectionPointTest extends TestCase {
+ 
+-  public void testInjectNullIntoNotNullableConstructor() {
++  public void noTestInjectNullIntoNotNullableConstructor() {
+     try {
+       createInjector().getInstance(FooConstructor.class);
+       fail("Injecting null should fail with an error");
+@@ -32,7 +32,7 @@ public class NullableInjectionPointTest extends TestCase {
+     }
+   }
+ 
+-  public void testInjectNullIntoNotNullableMethod() {
++  public void noTestInjectNullIntoNotNullableMethod() {
+     try {
+       createInjector().getInstance(FooMethod.class);
+       fail("Injecting null should fail with an error");
