@@ -19,7 +19,6 @@ SLOT="0"
 KEYWORDS="amd64 ~arm arm64 ppc64 x86"
 
 CP_DEPEND="
-	dev-java/jakarta-activation:1
 	~dev-java/shrinkwrap-api-${PV}:0
 	~dev-java/shrinkwrap-spi-${PV}:0
 "
@@ -31,6 +30,7 @@ CP_DEPEND="
 # testAddManifestStringTargetResourceFromJar(DynamicContainerTestBase.java:586)
 DEPEND="
 	${CP_DEPEND}
+	dev-java/jakarta-activation:1
 	virtual/jdk:1.8
 "
 
@@ -39,6 +39,7 @@ RDEPEND="
 	>=virtual/jre-1.8:*
 "
 
+JAVA_CLASSPATH_EXTRA="jakarta-activation-1"
 JAVA_RESOURCE_DIRS="src/main/resources"
 JAVA_SRC_DIR="src/main/java"
 
