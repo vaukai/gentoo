@@ -17,16 +17,12 @@ LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="amd64 ~arm arm64 ppc64 x86"
 
-CP_DEPEND="~dev-java/shrinkwrap-api-${PV}:0"
-
 DEPEND="
-	${CP_DEPEND}
+	~dev-java/shrinkwrap-api-${PV}:0
 	>=virtual/jdk-1.8:*
 "
 
-RDEPEND="
-	${CDP_EPEND}
-	>=virtual/jre-1.8:*
-"
+RDEPEND=">=virtual/jre-1.8:*"
 
+JAVA_CLASSPATH_EXTRA="shrinkwrap-api"
 JAVA_SRC_DIR="src/main/java"
