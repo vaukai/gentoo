@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -9,8 +9,8 @@ DESCRIPTION="sbt is a build tool for Scala and Java projects that aims to do the
 HOMEPAGE="https://www.scala-sbt.org/"
 SRC_URI="
 	https://github.com/sbt/sbt/archive/v${PV}.tar.gz -> ${P}.tar.gz
-	${P}-deps.tar.xz
 "
+#	${P}-deps.tar.xz
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64 ~x86"
