@@ -1,4 +1,4 @@
-# Copyright 2004-2023 Gentoo Authors
+# Copyright 2004-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: java-ant-2.eclass
@@ -52,9 +52,9 @@ inherit java-utils-2 multilib
 # @DEFAULT_UNSET
 # @DESCRIPTION:
 # Setting this variable non-empty before inheriting java-ant-2 disables adding
-# dev-java/ant-core into DEPEND.
+# dev-java/ant into DEPEND.
 if [[ -z "${JAVA_ANT_DISABLE_ANT_CORE_DEP}" ]]; then
-	JAVA_ANT_E_DEPEND+=" >=dev-java/ant-core-1.8.2:0"
+	JAVA_ANT_E_DEPEND+=" >=dev-java/ant-1.10.14:0"
 fi
 
 # add ant tasks specified in WANT_ANT_TASKS to DEPEND
