@@ -49,6 +49,27 @@ src_prepare() {
 	default #780585
 	java-pkg_clean ! -path "./byte-buddy-dep/src/test/*"	# Keep test-classes
 	java-pkg-2_src_prepare
+	cat > exports.xsl <<-EOF || die
+	<?xml version="1.0" encoding="UTF-8"?>
+	<xsl:stylesheet version="1.0" xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+		xmlns:a="http://maven.apache.org/POM/4.0.0">
+		<xsl:output omit-xml-declaration="yes"/>
+
+		<xsl:template match="a:project">
+				<xsl:apply-templates select="a:properties"/>
+		</xsl:template>
+
+		<xsl:template match="a:properties">
+			<xsl:apply-templates select="a:packages.list.external"/>
+		</xsl:template>
+
+		<xsl:template match="a:packages.list.external">
+			<xsl:value-of select="."/>
+		</xsl:template>
+	</xsl:stylesheet>
+	EOF
+	einfo "$( xalan -XSLTC -IN byte-buddy/pom.xml -XSL exports.xsl )"
 	# https://github.com/raphw/byte-buddy/blob/byte-buddy-1.12.20/byte-buddy-agent/pom.xml#L142-L176
 	cat > byte-buddy-agent/src/main/java/module-info.java <<-EOF || die
 		module net.bytebuddy.agent {
@@ -67,11 +88,16 @@ src_prepare() {
 
 	# https://github.com/raphw/byte-buddy/blob/byte-buddy-1.12.20/byte-buddy/pom.xml#L159-L195
 	local exports="$( \
-		sed -n '/<packages.list.external>/,/<\/packages.list.external/p' \
-		byte-buddy/pom.xml \
-		| sed -e 's:^:exports :' -e 's:,:;:' \
-		| grep -v 'packages.list.external\|shade' | tr -s '[:space:]' \
-		)" || die
+		xalan -XSLTC \
+		-IN byte-buddy/pom.xml \
+		-XSL exports.xsl \
+		| tr -s '[:space:]' \
+		| awk '{print "exports" $0}' )" || die
+	#	sed -n '/<packages.list.external>/,/<\/packages.list.external/p' \
+	#	byte-buddy/pom.xml \
+	#	| sed -e 's:^:exports :' -e 's:,:;:' \
+	#	| grep -v 'packages.list.external\|shade' | tr -s '[:space:]' \
+	#	)" || die
 	cat > byte-buddy/src/main/java/module-info.java <<-EOF || die
 		module net.bytebuddy {
 			requires static java.instrument;
