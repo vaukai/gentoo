@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # Skeleton command:
@@ -37,6 +37,12 @@ DOCS=( ../{CONTRIBUTING,NOTICE,README}.md )
 S="${WORKDIR}/jaxb-ri-${PV}-RI/jaxb-ri"
 
 JAVA_CLASSPATH_EXTRA="fastinfoset,jaxb-stax-ex"
+JAVADOC_CLASSPATH="${JAVA_CLASSPATH_EXTRA}"
+JAVADOC_SRC_DIRS=(
+	"txw/runtime/src/main/java"
+	"core/src/main/java"
+	"runtime/impl/src/main/java"
+)
 JAVA_TEST_GENTOO_CLASSPATH="junit-4"
 
 src_compile() {
@@ -64,17 +70,7 @@ src_compile() {
 	JAVA_GENTOO_CLASSPATH_EXTRA+=":runtime.jar"
 	rm -r target || die
 
-	if use doc; then
-		einfo "Compiling javadocs"
-		rm {core,runtime/impl}/src/main/java/module-info.java || die
-		JAVA_SRC_DIR=(
-			"txw/runtime/src/main/java"
-			"core/src/main/java"
-			"runtime/impl/src/main/java"
-		)
-		JAVA_JAR_FILENAME="ignoreme.jar"
-		java-pkg-simple_src_compile
-	fi
+	use doc && ejavadoc
 }
 
 src_test() {
