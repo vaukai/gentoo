@@ -168,6 +168,18 @@ else
 	: "${JAVA_LAUNCHER_FILENAME:=${PN}-${SLOT}}"
 fi
 
+# @ECLASS_VARIABLE: JAVA_MODULE_SOURCE_PATH
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Wrapper around javac's "Module Source Path" option.
+# The argument is passed to --module-source-path.
+# For details see "THE MODULE SOURCE PATH OPTION" in man javac(1).
+#
+# @CODE
+#      Example:
+#      JAVA_MODULE_SOURCE_PATH="${S}"
+# @CODE
+
 # @ECLASS_VARIABLE: JAVA_TESTING_FRAMEWORKS
 # @DEFAULT_UNSET
 # @DESCRIPTION:
