@@ -2195,27 +2195,9 @@ ejavadoc() {
 		einfo "javadoc ${javadoc_args} ${@}"
 	fi
 
-	if [[ "${JAVADOC_SRC_DIRS[@]}" ]]; then
-		mkdir -p target/api || die "cannot create target/api"
-		local dependency
-		for dependency in ${JAVADOC_CLASSPATH}; do
-			classpath="${classpath}:$(java-pkg_getjars \
-				--build-only \
-				--with-dependencies \
-				${dependency})"
-		done
-		find "${JAVADOC_SRC_DIRS[@]}" -name '*.java' > sources
-		javadoc \
-			"${javadoc_args}" \
-			-d target/api \
-			-cp "${classpath}" \
-			-quiet \
-			@sources || die "ejavadoc failed"
-	else
-		local args=( javadoc ${javadoc_args} "${@}" )
-		echo "${args[@]}" >&2
-		"${args[@]}" || die "ejavadoc failed"
-	fi
+	local args=( javadoc ${javadoc_args} "${@}" )
+	echo "${args[@]}" >&2
+	"${args[@]}" || die "ejavadoc failed"
 }
 
 # @FUNCTION: java-pkg_filter-compiler
