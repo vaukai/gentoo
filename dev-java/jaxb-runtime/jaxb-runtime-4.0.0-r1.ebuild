@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # Skeleton command:
@@ -66,7 +66,6 @@ src_compile() {
 
 	if use doc; then
 		einfo "Compiling javadocs"
-		rm {core,runtime/impl}/src/main/java/module-info.java || die
 		JAVA_SRC_DIR=(
 			"txw/runtime/src/main/java"
 			"core/src/main/java"
