@@ -347,7 +347,9 @@ java-pkg-simple_prepend_resources() {
 # If USE FLAG 'binary' exists and is set, it will just copy
 # ${JAVA_BINJAR_FILENAME} to ${S} and skip the rest of src_compile.
 java-pkg-simple_src_compile() {
-	local sources=sources.lst classes=target/classes apidoc=target/api moduleinfo
+	local sources=sources.lst classes=target/classes apidoc=target/api
+	local module modulename
+	local -a moduleinfo modulesourcepath
 
 	# do not compile if we decide to install binary jar
 	if has binary ${JAVA_PKG_IUSE} && use binary; then
@@ -373,7 +375,15 @@ java-pkg-simple_src_compile() {
 	else
 		find "${JAVA_SRC_DIR[@]}" -name \*.java > ${sources}
 	fi
-	moduleinfo=$(find "${JAVA_SRC_DIR[@]}" -name module-info.java)
+	readarray -t moduleinfo <<<"$(find "${JAVA_SRC_DIR[@]}" -name module-info.java)"
+	if [[ ${#moduleinfo[*]} -gt 1 ]]; then
+		# With more then one module-info file, we need to provide the
+		# source path for each module
+		for module in "${moduleinfo[@]}"; do
+			modulename="$(grep -Po '(?<=module ).*(?= {)' "${module}")"
+			modulesourcepath+=( --module-source-path "${modulename}=${module%/module-info.java}" )
+		done
+	fi
 
 	# create the target directory
 	mkdir -p ${classes} || die "Could not create target directory"
@@ -387,7 +397,7 @@ java-pkg-simple_src_compile() {
 		ejavac -d ${classes} -encoding ${JAVA_ENCODING}\
 			${classpath:+-classpath ${classpath}} ${JAVAC_ARGS} @${sources}
 	else
-		ejavac -d ${classes} -encoding ${JAVA_ENCODING}\
+		ejavac -d ${classes} "${modulesourcepath[@]}" -encoding ${JAVA_ENCODING}\
 			${classpath:+--module-path ${classpath}} --module-version ${PV}\
 			${JAVAC_ARGS} @${sources}
 	fi
@@ -399,9 +409,9 @@ java-pkg-simple_src_compile() {
 
 			JAVA_PKG_WANT_SOURCE="9"
 			JAVA_PKG_WANT_TARGET="9"
-			ejavac -d ${classes} -encoding ${JAVA_ENCODING}\
+			ejavac -d ${classes} "${modulesourcepath[@]}" -encoding ${JAVA_ENCODING}\
 				${classpath:+--module-path ${classpath}} --module-version ${PV}\
-				${JAVAC_ARGS} "${moduleinfo}"
+				${JAVAC_ARGS} "${moduleinfo[@]}"
 
 			JAVA_PKG_WANT_SOURCE=${tmp_source}
 			JAVA_PKG_WANT_TARGET=${tmp_target}
@@ -423,7 +433,7 @@ java-pkg-simple_src_compile() {
 					${classpath:+-classpath ${classpath}} ${JAVADOC_ARGS:- -quiet} \
 					@${sources} || die "javadoc failed"
 			else
-				ejavadoc -d ${apidoc} \
+				ejavadoc -d ${apidoc} "${modulesourcepath[@]}" \
 					-encoding ${JAVA_ENCODING} -docencoding UTF-8 -charset UTF-8 \
 					${classpath:+--module-path ${classpath}} ${JAVADOC_ARGS:- -quiet} \
 					@${sources} || die "javadoc failed"
@@ -503,7 +513,9 @@ java-pkg-simple_src_install() {
 # in the "generated-test" directory as content of this directory is preserved,
 # whereas content of target/test-classes is removed.
 java-pkg-simple_src_test() {
-	local test_sources=test_sources.lst classes=target/test-classes moduleinfo
+	local test_sources=test_sources.lst classes=target/test-classes
+	local module modulename
+	local -a moduleinfo modulesourcepath
 	local tests_to_run classpath
 
 	# do not continue if the USE FLAG 'test' is explicitly unset
@@ -542,7 +554,15 @@ java-pkg-simple_src_test() {
 	else
 		find "${JAVA_TEST_SRC_DIR[@]}" -name \*.java > ${test_sources}
 	fi
-	moduleinfo=$(find "${JAVA_TEST_SRC_DIR[@]}" -name module-info.java)
+	readarray -t moduleinfo <<<"$(find "${JAVA_TEST_SRC_DIR[@]}" -name module-info.java)"
+	if [[ ${#moduleinfo[*]} -gt 1 ]]; then
+		# With more then one module-info file, we need to provide the
+		# source path for each module
+		for module in "${moduleinfo[@]}"; do
+			modulename="$(grep -Po '(?<=module ).*(?= {)' "${module}")"
+			modulesourcepath+=( --module-source-path "${modulename}=${module%/module-info.java}" )
+		done
+	fi
 
 	# compile
 	if [[ -s ${test_sources} ]]; then
@@ -550,7 +570,7 @@ java-pkg-simple_src_test() {
 			ejavac -d ${classes} -encoding ${JAVA_ENCODING}\
 				${classpath:+-classpath ${classpath}} ${JAVAC_ARGS} @${test_sources}
 		else
-			ejavac -d ${classes} -encoding ${JAVA_ENCODING}\
+			ejavac -d ${classes} "${modulesourcepath[@]}" -encoding ${JAVA_ENCODING}\
 				${classpath:+--module-path ${classpath}} --module-version ${PV}\
 				${JAVAC_ARGS} @${test_sources}
 		fi
@@ -563,9 +583,9 @@ java-pkg-simple_src_test() {
 
 			JAVA_PKG_WANT_SOURCE="9"
 			JAVA_PKG_WANT_TARGET="9"
-			ejavac -d ${classes} -encoding ${JAVA_ENCODING}\
+			ejavac -d ${classes} "${modulesourcepath[@]}" -encoding ${JAVA_ENCODING}\
 				${classpath:+--module-path ${classpath}} --module-version ${PV}\
-				${JAVAC_ARGS} "${moduleinfo}"
+				${JAVAC_ARGS} "${moduleinfo[@]}"
 
 			JAVA_PKG_WANT_SOURCE=${tmp_source}
 			JAVA_PKG_WANT_TARGET=${tmp_target}
