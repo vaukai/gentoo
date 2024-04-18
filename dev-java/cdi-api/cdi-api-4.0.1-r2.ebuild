@@ -1,4 +1,4 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # Skeleton command:
@@ -77,7 +77,6 @@ src_compile() {
 	rm -r target || die
 
 	if use doc; then
-		rm lang-model/src/main/java/module-info.java || die
 		JAVA_SRC_DIR=(
 			"lang-model/src/main/java"
 			"api/src/main/java"
