@@ -34,6 +34,17 @@ JAVA_TEST_EXTRA_ARGS=( -Dbasedir="." )
 JAVA_TEST_RESOURCE_DIRS="tests/etc"
 JAVA_TEST_SRC_DIR="tests/java"
 
+src_test() {
+	# test selection according to line 154, build.xml
+	pushd tests/java || die
+		local JAVA_TEST_RUN_ONLY=$(find * \
+			-type f -path "**/test_*.java" )
+		JAVA_TEST_RUN_ONLY="${JAVA_TEST_RUN_ONLY//.java}"
+		JAVA_TEST_RUN_ONLY="${JAVA_TEST_RUN_ONLY//\//.}"
+	popd
+	java-pkg-simple_src_test
+}
+
 src_install() {
 	java-pkg-simple_src_install
 	if use doc; then
