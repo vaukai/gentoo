@@ -6,7 +6,7 @@ EAPI=8
 JAVA_PKG_IUSE="doc examples source test"
 MAVAN_ID="net.java.dev.javacc:javacc:${PV}"
 
-inherit java-pkg-2 java-ant-2
+inherit java-pkg-2
 
 DESCRIPTION="Java Compiler Compiler - The Java Parser Generator"
 HOMEPAGE="https://javacc.github.io/javacc/"
@@ -17,28 +17,34 @@ LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS="amd64 ~arm arm64 ppc64 x86"
 
-CP_DEPEND="dev-java/junit:0"
+BDEPEND=">=dev-java/ant-1.10.14:0"
 
-DEPEND="${CP_DEPEND}
+DEPEND="
+	dev-java/junit:0
 	>=virtual/jdk-1.8:*
-	test? (	>=dev-java/ant-1.10.14:0[junit] )"
-RDEPEND="${CP_DEPEND}
-	>=virtual/jre-1.8:*"
+	test? (	>=dev-java/ant-1.10.14:0[junit] )
+"
+RDEPEND=">=virtual/jre-1.8:*"
 
 PATCHES=(
-	"${FILESDIR}"/${PN}-4.0-javadoc.patch
+	"${FILESDIR}/${PN}-4.1-javadoc.patch"
+	"${FILESDIR}/javacc-4.1-source8.patch"
 )
 
-JAVA_ANT_CLASSPATH_TAGS+=" javadoc"
-JAVA_ANT_REWRITE_CLASSPATH="yes"
-
 src_prepare() {
+	default #780585
 	java-pkg-2_src_prepare
 	java-pkg_clean ! -path "./bootstrap/*"
+	java-pkg_jar-from --into lib/junit3.8.1 junit
+}
+
+src_compile() {
+	eant
+	use doc && eant javadoc
 }
 
 src_test() {
-	java-pkg-2_src_test
+	eant test
 }
 
 src_install() {
@@ -46,7 +52,7 @@ src_install() {
 
 	if use doc; then
 		java-pkg_dohtml -r www/*
-		java-pkg_dojavadoc target/javadoc
+		java-pkg_dojavadoc doc/api
 	fi
 
 	use examples && java-pkg_doexamples examples
