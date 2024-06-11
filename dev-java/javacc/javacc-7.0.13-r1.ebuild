@@ -6,7 +6,7 @@ EAPI=8
 JAVA_PKG_IUSE="doc examples source test"
 MAVAN_ID="net.java.dev.javacc:javacc:${PV}"
 
-inherit java-pkg-2 java-ant-2
+inherit java-pkg-2
 
 DESCRIPTION="Java Compiler Compiler - The Java Parser Generator"
 HOMEPAGE="https://javacc.github.io/javacc/"
@@ -17,19 +17,34 @@ LICENSE="BSD-2"
 SLOT="7.0.13"
 KEYWORDS="amd64 ~arm arm64 ppc64 x86"
 
-DEPEND="
-	>=virtual/jdk-1.8:*
-	test? (	>=dev-java/ant-1.10.14:0[junit] )"
-
+BDEPEND=">=dev-java/ant-1.10.14:0[junit]"
+DEPEND=">=virtual/jdk-1.8:*"
 RDEPEND=">=virtual/jre-1.8:*"
 
+DOCS=(
+	README.md
+	docs/faq.md
+	docs/release-notes.md
+)
+
+PATCHES=(
+	"${FILESDIR}/javacc-7.0.13-javadoc.patch"
+	"${FILESDIR}/javacc-7.0.13-source8.patch"
+)
+
 src_prepare() {
+	default #780585
 	java-pkg-2_src_prepare
 	java-pkg_clean ! -path "./bootstrap/*"
 }
 
+src_compile() {
+	eant
+	use doc && eant javadoc
+}
+
 src_test() {
-	java-pkg-2_src_test
+	eant test
 }
 
 src_install() {
