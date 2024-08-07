@@ -70,9 +70,9 @@ src_prepare() {
 src_test() {
 	# Make sure no older versions of this slot are present in the classpath
 	# https://bugs.gentoo.org/834138#c4
-	local old_ver_cp="$(nonfatal java-pkg_getjars "${PN}-${SLOT}")"
+	local old_ver_cp="$(nonfatal java-pkg_getjars --build-only "${PN}-${SLOT}")"
 	local new_test_cp="$(\
-		java-pkg_getjars --with-dependencies "${JAVA_TEST_GENTOO_CLASSPATH}")"
+		java-pkg_getjars --build-only --with-dependencies "${JAVA_TEST_GENTOO_CLASSPATH}")"
 	new_test_cp="${new_test_cp//"${old_ver_cp}"/}"
 
 	# Some of the test cases require an absolute path to the JAR being tested
