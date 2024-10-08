@@ -37,6 +37,7 @@ has test ${JAVA_PKG_IUSE} && RESTRICT+=" !test? ( test )"
 # so that ebuilds can use new features without depending on specific versions.
 JAVA_PKG_E_DEPEND=">=dev-java/java-config-2.2.0-r3"
 has source ${JAVA_PKG_IUSE} && JAVA_PKG_E_DEPEND="${JAVA_PKG_E_DEPEND} source? ( app-arch/zip )"
+JAVA_PKG_E_DEPEND="dev-java/java-gentoo-target:0"
 
 # @ECLASS_VARIABLE: JAVA_PKG_ALLOW_VM_CHANGE
 # @DESCRIPTION:
@@ -1656,7 +1657,14 @@ java-pkg_current-vm-matches() {
 #
 # @RETURN: string - Either the lowest possible source, or JAVA_PKG_WANT_SOURCE
 java-pkg_get-source() {
-	echo ${JAVA_PKG_WANT_SOURCE:-$(depend-java-query --get-lowest "${DEPEND} ${RDEPEND}")}
+	local JAVA_GENTOO_SOURCE QUERY
+	QUERY=$(depend-java-query --get-lowest "${DEPEND} ${RDEPEND}")
+	JAVA_GENTOO_SOURCE="$(source /usr/share/java-gentoo-target/java-gentoo-target; echo $JAVA_GENTOO_SOURCE )"
+	if [[ ${JAVA_GENTOO_SOURCE#1.} -gt ${QUERY#1.} ]] ; then
+		echo ${JAVA_PKG_WANT_SOURCE:-${JAVA_GENTOO_SOURCE}}
+	else
+		echo ${JAVA_PKG_WANT_SOURCE:-$(depend-java-query --get-lowest "${DEPEND} ${RDEPEND}")}
+	fi
 }
 
 # @FUNCTION: java-pkg_get-target
@@ -1667,7 +1675,14 @@ java-pkg_get-source() {
 #
 # @RETURN: string - Either the lowest possible target, or JAVA_PKG_WANT_TARGET
 java-pkg_get-target() {
-	echo ${JAVA_PKG_WANT_TARGET:-$(depend-java-query --get-lowest "${DEPEND} ${RDEPEND}")}
+	local JAVA_GENTOO_TARGET QUERY
+	QUERY=$(depend-java-query --get-lowest "${DEPEND} ${RDEPEND}")
+	JAVA_GENTOO_TARGET="$(source /usr/share/java-gentoo-target/java-gentoo-target; echo $JAVA_GENTOO_TARGET )"
+	if [[ ${JAVA_GENTOO_TARGET#1.} -gt ${QUERY#1.} ]]; then
+		echo ${JAVA_PKG_WANT_TARGET:-${JAVA_GENTOO_TARGET}}
+	else
+		echo ${JAVA_PKG_WANT_TARGET:-$(depend-java-query --get-lowest "${DEPEND} ${RDEPEND}")}
+	fi
 }
 
 # @FUNCTION: java-pkg_get-javac
