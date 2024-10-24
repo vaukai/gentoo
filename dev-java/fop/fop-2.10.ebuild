@@ -11,6 +11,12 @@ inherit java-pkg-2 java-pkg-simple verify-sig
 
 DESCRIPTION="XML Graphics Format Object Processor All-In-One"
 HOMEPAGE="https://xmlgraphics.apache.org/fop/"
+# SRC_URI="
+# 	mirror://apache/xmlgraphics/fop/source/${P}-src.tar.gz
+# 	https://dev.gentoo.org/~flow/distfiles/fop/fop-2.7-jars.tar.xz
+# 	verify-sig? ( https://downloads.apache.org/xmlgraphics/fop/source/${P}-src.tar.gz.asc )
+# 	test? ( https://repo1.maven.org/maven2/net/sf/offo/fop-hyph/2.0/fop-hyph-2.0.jar )
+# "
 SRC_URI="
 	mirror://apache/xmlgraphics/fop/source/${P}-src.tar.gz
 	verify-sig? ( https://downloads.apache.org/xmlgraphics/fop/source/${P}-src.tar.gz.asc )
@@ -123,6 +129,7 @@ src_compile() {
 	# produced manually by running "mvn package".
 	# Upstream does this with maven-antrun-plugin, fop-core/pom.xml lines 285-308
 	pushd "${JAVA_RESOURCE_DIRS}" > /dev/null || die
+		# jar -xf "${WORKDIR}/fop-2.7-core-event-models.jar"
 		jar -xf "${FILESDIR}/fop-2.10-core-event-models.jar"
 	popd > /dev/null || die
 
@@ -158,6 +165,7 @@ src_test() {
 	JAVA_TEST_SRC_DIR="fop-events/src/test/java"
 	# This jar file was created manually from the output of "mvn test".
 	# Upstream does this with maven-antrun-plugin
+	# jar -xf "${WORKDIR}/fop-2.7-test-event-model.jar" || die
 	jar -xf "${FILESDIR}/fop-2.10-test-event-model.jar" || die
 	mkdir generated-test || die
 	mv {target/test-classes,generated-test}/org || die
