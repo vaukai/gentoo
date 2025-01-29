@@ -274,6 +274,18 @@ fi
 #	)
 # @CODE
 
+# @ECLASS_VARIABLE: JAVA_PACKAGER_ZIP
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# An array of release-specific directories which need a workaround for packaging.
+# Needed for packages which make trouble when it comes to multi-relase packaging.
+# For those cases we use app-arch/zip.
+# @CODE
+# Examples:
+# 	JAVA_PACKAGER_ZIP=( 9 15 )
+# 	JAVA_PACKAGER_ZIP="24"
+# @CODE
+
 # @FUNCTION: java-pkg-simple_getclasspath
 # @USAGE: java-pkg-simple_getclasspath
 # @INTERNAL
@@ -693,7 +705,10 @@ java-pkg-simple_src_compile() {
 		pushd target/versions >> /dev/null || die
 			for version in $(ls -d * | sort -g); do
 				debug-print "Version is ${version}"
-				multi_release="${multi_release} --release ${version} -C target/versions/${version} . "
+				# Exclude release-specific directories which make trouble with java packager
+				if ! has ${version} ${JAVA_PACKAGER_ZIP}; then
+					multi_release="${multi_release} --release ${version} -C target/versions/${version} . "
+				fi
 			done
 		popd >> /dev/null || die
 	fi
@@ -719,9 +734,20 @@ java-pkg-simple_src_compile() {
 		rm -f "${T}/add-to-MANIFEST.MF" || die "cannot remove"
 	fi
 
+	# Workaround for release-specific directories which make trouble with java packager
+	if [[ -n "${JAVA_PACKAGER_ZIP}" ]]; then
+		JAVA_PKG_E_DEPEND="${JAVA_PKG_E_DEPEND} app-arch/zip"
+		mkdir -p META-INF/versions || die "create META-INF/versions"
+		for version in ${JAVA_PACKAGER_ZIP[@]}; do
+			mv target/versions/${version} META-INF/versions || "move ${versions} dir"
+			zip -mr ${JAVA_JAR_FILENAME} META-INF/versions/${version} || die "update using zip"
+		done
+	fi
+
 	unset JAVA_MODULE_NAME
 	unset JAVA_MODULE_INFO_OUT
 	unset JAVA_MODULE_INFO_RELEASE
+	unset JAVA_PACKAGER_ZIP
 	unset JAVA_RELEASE_SRC_DIRS
 }
 
