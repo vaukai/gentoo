@@ -1,0 +1,19 @@
+There was 1 error:
+1) testZoneInfoProviderResourceLoading(org.joda.time.TestDateTimeZone)java.lang.UnsupportedOperationException: Setting a Security Manager is not supported
+	at java.base/java.lang.System.setSecurityManager(System.java:286)
+	at org.joda.time.TestDateTimeZone.testZoneInfoProviderResourceLoading(TestDateTimeZone.java:612)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+
+FAILURES!!!
+
+--- a/src/test/java/org/joda/time/TestDateTimeZone.java
++++ b/src/test/java/org/joda/time/TestDateTimeZone.java
+@@ -583,7 +583,7 @@ public class TestDateTimeZone extends TestCase {
+         }
+     }
+ 
+-    public void testZoneInfoProviderResourceLoading() {
++    public void noTestZoneInfoProviderResourceLoading() {
+         final Set<String> ids = new HashSet<String>(DateTimeZone.getAvailableIDs());
+         ids.remove(DateTimeZone.getDefault().getID());
+         final String id = ids.toArray(new String[ids.size()])[new Random().nextInt(ids.size())];
