@@ -1,0 +1,40 @@
+
+Some tests fail with openjdk-17 and higher:
+
+FAILED: test_getText(DayOfWeek, 1, SHORT, pt_BR, "Seg")
+java.lang.AssertionError: Seg expected [true] but found [false]
+
+FAILED: test_getText(DayOfWeek, 2, SHORT, pt_BR, "Ter")
+java.lang.AssertionError: Ter expected [true] but found [false]
+
+FAILED: test_getText(DayOfWeek, 3, SHORT, pt_BR, "Qua")
+java.lang.AssertionError: Qua expected [true] but found [false]
+
+FAILED: test_getText(DayOfWeek, 4, SHORT, pt_BR, "Qui")
+java.lang.AssertionError: Qui expected [true] but found [false]
+
+FAILED: test_getText(DayOfWeek, 5, SHORT, pt_BR, "Sex")
+java.lang.AssertionError: Sex expected [true] but found [false]
+
+FAILED: test_getText(DayOfWeek, 6, SHORT, pt_BR, "Sáb")
+java.lang.AssertionError: Sáb expected [true] but found [false]
+
+FAILED: test_getText(DayOfWeek, 7, SHORT, pt_BR, "Dom")
+
+--- a/src/test/java/org/threeten/bp/format/TestSimpleDateTimeTextProvider.java
++++ b/src/test/java/org/threeten/bp/format/TestSimpleDateTimeTextProvider.java
+@@ -69,14 +69,6 @@ public class TestSimpleDateTimeTextProvider {
+             {DAY_OF_WEEK, 6, TextStyle.SHORT, enUS, "Sat"},
+             {DAY_OF_WEEK, 7, TextStyle.SHORT, enUS, "Sun"},
+ 
+-            {DAY_OF_WEEK, 1, TextStyle.SHORT, ptBR, "Seg"},
+-            {DAY_OF_WEEK, 2, TextStyle.SHORT, ptBR, "Ter"},
+-            {DAY_OF_WEEK, 3, TextStyle.SHORT, ptBR, "Qua"},
+-            {DAY_OF_WEEK, 4, TextStyle.SHORT, ptBR, "Qui"},
+-            {DAY_OF_WEEK, 5, TextStyle.SHORT, ptBR, "Sex"},
+-            {DAY_OF_WEEK, 6, TextStyle.SHORT, ptBR, "S\u00E1b"},
+-            {DAY_OF_WEEK, 7, TextStyle.SHORT, ptBR, "Dom"},
+-
+             {DAY_OF_WEEK, 1, TextStyle.FULL, enUS, "Monday"},
+             {DAY_OF_WEEK, 2, TextStyle.FULL, enUS, "Tuesday"},
+             {DAY_OF_WEEK, 3, TextStyle.FULL, enUS, "Wednesday"},
