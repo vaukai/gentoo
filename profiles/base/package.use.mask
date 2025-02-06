@@ -5,6 +5,9 @@
 # mask everywhere, unmask on arch/*) use arch/base.
 
 # New entries go on top.
+# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2025-02-12)
+# No suitable versions of dev-libs/protobuf available.
+>=dev-java/protobuf-java-4.29.3 system-protoc
 
 # Michał Górny <mgorny@gentoo.org> (2025-03-05)
 # Mask until we have keyworded dev-util/spirv-llvm-translator:20 release.
