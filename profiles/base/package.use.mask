@@ -5,6 +5,9 @@
 # mask everywhere, unmask on arch/*) use arch/base.
 
 # New entries go on top.
+# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2025-02-12)
+# No suitable versions of dev-libs/protobuf available.
+>=dev-java/protobuf-java-4.29.3 system-protoc
 
 # Paul Zander <negril.nx+gentoo@gmail.com> (2025-02-24)
 # Only builds with ffmpeg-4.x, upstream has no timeline to fix it.
