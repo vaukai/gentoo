@@ -50,8 +50,9 @@ src_unpack() {
 
 src_prepare() {
 	java-pkg-2_src_prepare
-	# TBD: unboundid-ldapsdk should be packaged from source.
-	java-pkg_clean ! -path "./libs/unboundid-ldapsdk-6.0.8.jar"
+
+	# Keep it for unpacking and compiling in test phase.
+	java-pkg_clean ! -path "./libs/unboundid-ldapsdk-6.0.8-sources.jar"
 }
 
 src_compile() {
@@ -70,6 +71,20 @@ src_compile() {
 src_test() {
 	mv ../bc-test-data-${MY_PV} bc-test-data || die "cannot move bc-test-data"
 
+	# unpack sources of unboundid-ldapsdk
+	mkdir ldapsdk && pushd $_ > /dev/null || "mkdir unboundid"
+		jar xf ../libs/unboundid-ldapsdk-6.0.8-sources.jar || die "unpack unboundid"
+	popd > /dev/null
+
+	# compile sources of unboundid-ldapsdk
+	ejavac -d target/ldapsdk $(find ldapsdk -name '*.java')
+
+	# copy resources from ldapsdk to target/ldapsdk
+	find ldapsdk -type f ! -name '*.java' -execdir cp --parents {} ../target/ldapsdk ';' || die "find"
+
+	# package ldapsdk.jar
+	jar cvf ldapsdk.jar -C target/ldapsdk . || die "create ldapsdk.jar"
+
 	JAVA_TEST_EXTRA_ARGS="-Dtest.java.version.prefix=$(java-config -g PROVIDES_VERSION)"
 	JAVA_TEST_EXTRA_ARGS+=" -Dbc.test.data.home=${S}/core/src/test/data"
 	JAVA_TEST_EXTRA_ARGS+=" -Xmx${CHECKREQS_MEMORY}"
@@ -78,24 +93,18 @@ src_test() {
 	einfo "Testing \"core\""
 	JAVA_TEST_RESOURCE_DIRS="core/src/test/resources"
 	JAVA_TEST_SRC_DIR="core/src/test/java"
-	pushd core/src/test/java || die
-		local JAVA_TEST_RUN_ONLY=$(find * \
-			-name "AllTests.java" )
-	popd || die
-	JAVA_TEST_RUN_ONLY="${JAVA_TEST_RUN_ONLY//.java}"
-	JAVA_TEST_RUN_ONLY="${JAVA_TEST_RUN_ONLY//\//.}"
+	local TESTS=$(find core/src/test/java -name "AllTests.java" -printf "%P\n")
+	TESTS="${TESTS//.java}"
+	JAVA_TEST_RUN_ONLY="${TESTS//\//.}"
 	java-pkg-simple_src_test
 
 	einfo "Testing bcprov"
-	JAVA_GENTOO_CLASSPATH_EXTRA=":core.jar:libs/unboundid-ldapsdk-6.0.8.jar"
+	JAVA_GENTOO_CLASSPATH_EXTRA=":core.jar:ldapsdk.jar"
 	JAVA_TEST_RESOURCE_DIRS="prov/src/test/resources"
 	JAVA_TEST_SRC_DIR="prov/src/test/java"
-	pushd prov/src/test/java || die
-		local JAVA_TEST_RUN_ONLY=$(find * \
-			-name "AllTests.java" )
-	popd || die
-	JAVA_TEST_RUN_ONLY="${JAVA_TEST_RUN_ONLY//.java}"
-	JAVA_TEST_RUN_ONLY="${JAVA_TEST_RUN_ONLY//\//.}"
+	local TESTS=$(find prov/src/test/java -name "AllTests.java" -printf "%P\n")
+	TESTS="${TESTS//.java}"
+	JAVA_TEST_RUN_ONLY="${TESTS//\//.}"
 	java-pkg-simple_src_test
 }
 
