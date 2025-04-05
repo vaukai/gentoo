@@ -33,6 +33,10 @@
 
 #--- END OF EXAMPLES ---
 
+# Volkmar W. Pogatzki <gentoo@pogatzki.net> (2025-04-05)
+# Depends on >=protobuf-java-4.30 which is masked
+dev-java/testparameterinjector
+
 # Sam James <sam@gentoo.org> (2025-04-05)
 # New abseil/protobuf breaks too much:
 # * net-libs/grpc (bug #953141)
