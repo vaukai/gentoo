@@ -10,50 +10,48 @@ JAVA_PKG_IUSE="doc source test"
 MAVEN_ID="com.google.protobuf:protobuf-java:${PV}"
 JAVA_TESTING_FRAMEWORKS="junit-4"
 
-inherit java-pkg-2 java-pkg-simple cmake
+inherit cmake java-pkg-2 java-pkg-simple
 
 DESCRIPTION="Core Protocol Buffers library"
 HOMEPAGE="https://protobuf.dev"
-# Currently we bundle the binary version of truth.jar used only for tests, we don't install it.
-# And we build artifact x.y.z from the y.z tarball in order to allow sharing the tarball with
-# dev-libs/protobuf.
+
+
+
 MY_PV="$(ver_cut 2-3)"
 MY_PV="${MY_PV/_rc/-rc}"
-TV="1.4.4"
-SRC_URI="
-	https://github.com/protocolbuffers/protobuf/archive/v${MY_PV}.tar.gz -> protobuf-${MY_PV}.tar.gz
-	test? (
-		https://repo1.maven.org/maven2/com/google/truth/truth/${TV}/truth-${TV}.jar
-	)
-"
+MY_P="protobuf-${MY_PV}.tar.gz"
+SRC_URI="https://github.com/protocolbuffers/protobuf/releases/download/v${MY_PV}/${MY_P}"
 S="${WORKDIR}/protobuf-${MY_PV}"
 
 LICENSE="BSD"
 SLOT="0/$(ver_cut 1)"
-KEYWORDS="~amd64 ~arm64 ~ppc64 ~amd64-linux ~x86-linux ~x64-macos"
+KEYWORDS="~amd64"
 IUSE="system-protoc"
 
 BDEPEND="
 	system-protoc? ( dev-libs/protobuf:0/${MY_PV}.0[protoc] )
 	!system-protoc? ( >=dev-cpp/abseil-cpp-${ABSEIL_MIN_VER}:= )
 "
+
 DEPEND="
 	>=virtual/jdk-1.8:*
 	test? (
-		dev-java/guava:0
+		>=dev-java/guava-33.4.6:0
 		dev-java/mockito:4
+		>=dev-java/snakeyaml-2.4:2
+		dev-java/testparameterinjector:0
+		dev-java/truth:0
 	)
 "
-RDEPEND="
-	>=virtual/jre-1.8:*
-"
+
+RDEPEND=">=virtual/jre-1.8:*"
 
 JAVA_AUTOMATIC_MODULE_NAME="com.google.protobuf"
 JAVA_JAR_FILENAME="protobuf.jar"
 JAVA_RESOURCE_DIRS="java/core/src/main/resources"
 JAVA_SRC_DIR="java/core/src/main/java"
 
-JAVA_TEST_GENTOO_CLASSPATH="guava,junit-4,mockito-4"
+JAVA_TEST_GENTOO_CLASSPATH="guava,junit-4,mockito-4,snakeyaml-2"
 JAVA_TEST_SRC_DIR="java/core/src/test/java"
 
 run-protoc() {
@@ -66,15 +64,12 @@ run-protoc() {
 
 src_prepare() {
 	# If the corresponding version of system-protoc is not available we build protoc locally
-	if use system-protoc; then
-		 # apply patches
-		default
-	else
+	if ! use system-protoc; then
 		cmake_src_prepare
 	fi
 	java-pkg-2_src_prepare
 
-	# https://github.com/protocolbuffers/protobuf/blob/main/java/core/generate-sources-build.xml
+	# ${S}/java/core/generate-sources-build.xml
 	einfo "Replace variables in generate-sources-build.xml"
 	sed \
 		-e 's:${generated.sources.dir}:java/core/src/main/java:' \
@@ -84,7 +79,7 @@ src_prepare() {
 		-e '/project\|echo\|mkdir\|exec/d' \
 		-i java/core/generate-sources-build.xml || die "sed to sources failed"
 
-	# https://github.com/protocolbuffers/protobuf/blob/main/java/core/generate-test-sources-build.xml
+	# ${S}/java/core/generate-test-sources-build.xml
 	einfo "Replace variables in generate-test-sources-build.xml"
 	sed \
 		-e 's:${generated.testsources.dir}:java/core/src/test/java:' \
@@ -123,7 +118,12 @@ src_compile() {
 }
 
 src_test() {
-	local -x JAVA_GENTOO_CLASSPATH_EXTRA="${DISTDIR}/truth-${TV}.jar"
+	# Note: Annotation processing is enabled because one or more processors were found
+	#   on the class path. A future release of javac may disable annotation processing
+	#   unless at least one processor is specified by name (-processor), or a search
+	#   path is specified (--processor-path, --processor-module-path), or annotation
+	#   processing is enabled explicitly (-proc:only, -proc:full).
+	JAVA_GENTOO_CLASSPATH_EXTRA+=":$(java-pkg_getjars --build-only testparameterinjector,truth)"
 
 	# google/protobuf/java_features.proto: File not found.
 	cp {java/core/src/main/resources,src}/google/protobuf/java_features.proto || die
@@ -143,21 +143,14 @@ src_test() {
 	einfo "Running tests"
 	# Invalid test class 'map_test.MapInitializationOrderTest':
 	# 1. Test class should have exactly one public constructor
-	# Invalid test class 'protobuf_unittest.CachedFieldSizeTest':
+	# Invalid test class 'proto2_unittest.CachedFieldSizeTest':
 	# 1. Test class should have exactly one public constructor
-	pushd "${JAVA_TEST_SRC_DIR}" >/dev/null || die
-		local JAVA_TEST_RUN_ONLY=$(find ./* \
-			-path "**/*Test.java" \
-			! -path "**/Abstract*Test.java" \
-			! -name "MapInitializationOrderTest.java" \
-			! -path '*protobuf_unittest/CachedFieldSizeTest.java'
-			)
-	popd >/dev/null || die
+	local JAVA_TEST_RUN_ONLY=$(find "${JAVA_TEST_SRC_DIR}" \
+		-path "**/*Test.java" \
+		! -path "**/Abstract*Test.java" \
+		! -name "MapInitializationOrderTest.java" \
+		! -name 'CachedFieldSizeTest.java' -printf "%P\n")
 	JAVA_TEST_RUN_ONLY="${JAVA_TEST_RUN_ONLY//.java}"
 	JAVA_TEST_RUN_ONLY="${JAVA_TEST_RUN_ONLY//\//.}"
 	java-pkg-simple_src_test
-}
-
-src_install() {
-	java-pkg-simple_src_install
 }
