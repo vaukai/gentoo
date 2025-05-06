@@ -1,4 +1,4 @@
-# Copyright 2004-2024 Gentoo Authors
+# Copyright 2004-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: java-utils-2.eclass
@@ -37,6 +37,21 @@ has test ${JAVA_PKG_IUSE} && RESTRICT+=" !test? ( test )"
 # so that ebuilds can use new features without depending on specific versions.
 JAVA_PKG_E_DEPEND=">=dev-java/java-config-2.2.0-r3"
 has source ${JAVA_PKG_IUSE} && JAVA_PKG_E_DEPEND="${JAVA_PKG_E_DEPEND} source? ( app-arch/zip )"
+
+# @ECLASS_VARIABLE: JAVA_DISABLE_JAVA_DEP_CHECK
+# @PRE_INHERIT
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Helper variable to be used in packages which would otherwise have circular
+# dependencies with dev-java/java-dep-check once this is forced to BDEPEND.
+if [[ -n ${JAVA_PKG_STRICT} ]]; then
+	# Avoid having to emerge it separately every time
+	# Needed for java-pkg_verify-classes
+	BDEPEND="dev-java/javatoolkit"
+	if [[ -z "${JAVA_DISABLE_JAVA_DEP_CHECK}" ]]; then
+		BDEPEND="dev-java/java-dep-check:0" || die
+	fi
+fi
 
 # @ECLASS_VARIABLE: JAVA_PKG_ALLOW_VM_CHANGE
 # @DESCRIPTION:
