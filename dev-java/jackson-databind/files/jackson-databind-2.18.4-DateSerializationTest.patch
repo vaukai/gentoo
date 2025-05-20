@@ -1,0 +1,37 @@
+
+│  │  ├─ testWithTimeZoneOverride()
+│  │  │       tags: []
+│  │  │   uniqueId: [engine:junit-jupiter]/[class:com.fasterxml.jackson.databind.ser.jdk.DateSerializationTest]/[method:testWithTimeZoneOverride()]
+│  │  │     parent: [engine:junit-jupiter]/[class:com.fasterxml.jackson.databind.ser.jdk.DateSerializationTest]
+│  │  │     source: MethodSource [className = 'com.fasterxml.jackson.databind.ser.jdk.DateSerializationTest', methodName = 'testWithTimeZoneOverride', methodParameterTypes = '']
+WARNING: Use of the three-letter time zone ID "PST" is deprecated and it will be removed in a future release
+WARNING: Use of the three-letter time zone ID "PST" is deprecated and it will be removed in a future release
+WARNING: Use of the three-letter time zone ID "PST" is deprecated and it will be removed in a future release
+WARNING: Use of the three-letter time zone ID "EST" is deprecated and it will be removed in a future release
+│  │  │     caught: org.opentest4j.AssertionFailedError: expected: <"1970-01-01/03:30 IRST"> but was: <"1970-01-01/03:30 GMT+03:30">
+│  │  │               	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+│  │  │               	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+│  │  │               	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+│  │  │               	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+│  │  │               	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+│  │  │               	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+│  │  │               	at com.fasterxml.jackson.databind.ser.jdk.DateSerializationTest.testWithTimeZoneOverride(DateSerializationTest.java:315)
+│  │  │               	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+│  │  │               	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+│  │  │               	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+│  │  │   duration: 14 ms
+│  │  │     status: ✘ FAILED
+
+Test passes with openjdk:21 and lower
+
+--- a/src/test/java/com/fasterxml/jackson/databind/ser/jdk/DateSerializationTest.java
++++ b/src/test/java/com/fasterxml/jackson/databind/ser/jdk/DateSerializationTest.java
+@@ -312,7 +312,7 @@ public class DateSerializationTest
+ 
+         // wrt [databind#2643]
+         w = mapper.writer().with(TimeZone.getTimeZone("Asia/Tehran"));
+-        assertEquals(q("1970-01-01/"+zoneOffset("0330")+" IRST"), w.writeValueAsString(new Date(0)));
++        assertEquals(q("1970-01-01/"+zoneOffset("0330")+" GMT+03:30"), w.writeValueAsString(new Date(0)));
+     }
+ 
+     /**
