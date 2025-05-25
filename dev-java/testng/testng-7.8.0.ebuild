@@ -48,7 +48,7 @@ DEPEND="
 		dev-java/ant-testutil:0
 		dev-java/assertj-core:0
 		dev-java/bsh:0
-		dev-java/commons-io:0
+		>=dev-java/commons-io-2.19.0:0
 		dev-java/guava:0
 		dev-java/mockito:4
 		dev-java/shrinkwrap-api:0
@@ -93,8 +93,8 @@ JAVA_SRC_DIR=(
 #	testng-test-kit/src/main/java # only used for tests, not included in upstream jar file
 )
 
+#	ant-testutil
 JAVA_TEST_GENTOO_CLASSPATH="
-	ant-testutil
 	assertj-core
 	bsh
 	commons-io
@@ -124,7 +124,7 @@ JAVA_TEST_SRC_DIR=(
 	testng/src/test/java
 	testng-asserts/src/test/java # needs testng-test-kit/src/main/java
 	testng-core/src/test/java
-	testng-core/src/test/groovy
+#	testng-core/src/test/groovy
 	testng-test-kit/src/main/java # needed for testng-asserts/src/test
 #	testng-test-osgi/src/test/java # package org.ops4j.pax.exam does not exist
 )
@@ -154,15 +154,17 @@ src_test() {
 	local CP="testng-core/src/test/java:testng-asserts/src/test/java"
 
 	# SimpleBaseTest is needed to compile GroovyTest
-	ejavac -cp "${CP}:${PN}.jar:$(java-pkg_getjars guava)" \
-		testng-core/src/test/java/test/SimpleBaseTest.java || die "Compiling SimpleBaseTest failed"
+#	ejavac -cp "${CP}:${PN}.jar:$(java-pkg_getjars guava)" \
+#		testng-core/src/test/java/test/SimpleBaseTest.java || die "Compiling SimpleBaseTest failed"
+#	has moved to:
+#		testng-core/src/test/kotlin/test/SimpleBaseTest.kt || die "Compiling SimpleBaseTest failed"
 
 	# java-pkg-simple.eclass expects generated test classes in this
 	# directory and will copy them to target/test-classes
-	"groovy-${AGV}/bin/groovyc" \
-		-cp "${CP}:${DISTDIR}/spock-core-${SCV}.jar:$(java-pkg_getjars assertj-core)" \
-		-d generated-test \
-		testng-core/src/test/groovy/test/groovy/*.groovy || die "groovy failed to compile"
+#	"groovy-${AGV}/bin/groovyc" \
+#		-cp "${CP}:${DISTDIR}/spock-core-${SCV}.jar:$(java-pkg_getjars assertj-core)" \
+#		-d generated-test \
+#		testng-core/src/test/groovy/test/groovy/*.groovy || die "groovy failed to compile"
 
 	JAVA_GENTOO_CLASSPATH_EXTRA+=":${DISTDIR}/jquery-${JQV}.jar"
 	JAVA_GENTOO_CLASSPATH_EXTRA+=":${DISTDIR}/groovy-all-${GAV}.jar"
