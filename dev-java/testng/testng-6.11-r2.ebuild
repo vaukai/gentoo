@@ -37,7 +37,7 @@ CP_DEPEND="
 	dev-java/guice:4
 	dev-java/jcommander:1.64
 	dev-java/junit:4
-	dev-java/snakeyaml:0
+	~dev-java/snakeyaml-1.33:0
 "
 
 DEPEND="${CP_DEPEND}
@@ -48,6 +48,7 @@ DEPEND="${CP_DEPEND}
 	)"
 
 RDEPEND="${CP_DEPEND}
+	!>=dev-java/snakeyaml-2.4:0
 	>=virtual/jre-1.8:*"
 
 BDEPEND="app-arch/unzip"
