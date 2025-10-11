@@ -33,11 +33,8 @@ KEYWORDS="~amd64 ~arm64 ~ppc64"
 BDEPEND="app-arch/unzip"
 
 CP_DEPEND="
-	>=dev-java/ant-1.10.15:0
-	dev-java/bsh:0
 	>=dev-java/guice-7.0.0:0
 	>=dev-java/jcommander-1.82:0
-	dev-java/junit:4
 	dev-java/slf4j-api:0
 	>=dev-java/snakeyaml-2.5:2
 "
@@ -47,7 +44,9 @@ DEPEND="
 	>=virtual/jdk-11:*
 	test? (
 		>=dev-java/assertj-core-3.27.6:0
+		dev-java/bsh:0
 		>=dev-java/guava-33.5.0:0
+		dev-java/junit:4
 	)
 "
 
@@ -75,7 +74,7 @@ JAVA_SRC_DIR=(
 #	testng-test-osgi/src/test/java # only used for tests, not included in upstream jar file
 )
 
-JAVA_TEST_GENTOO_CLASSPATH="assertj-core"
+JAVA_TEST_GENTOO_CLASSPATH="assertj-core bsh junit-4"
 JAVA_TEST_RESOURCE_DIRS="src/test/resources"
 JAVA_TEST_RUN_ONLY="src/test/resources/testng.xml"
 JAVA_TEST_SRC_DIR="src/test/java"
