@@ -56,6 +56,7 @@ DEPEND="
 RDEPEND="
 	${CP_DEPEND}
 	>=virtual/jre-11:*
+	dev-java/jsr305:0
 "
 
 DOCS=( README.md {ANNOUNCEMENT,CHANGES}.txt )
@@ -113,4 +114,5 @@ src_install() {
 	java-pkg_regjar "${ED}/usr/share/${PN}/lib/jquery.jar"
 
 	java-pkg_register-ant-task
+	java-pkg_register-dependency jsr305
 }
