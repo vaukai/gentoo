@@ -57,6 +57,7 @@ BDEPEND="app-arch/unzip"
 DOCS=( README.md {ANNOUNCEMENT,CHANGES}.txt )
 
 JAVA_AUTOMATIC_MODULE_NAME="org.testng"
+JAVA_MAIN_CLASS="org.testng.TestNG"
 JAVA_RESOURCE_DIRS="testng-core/src/main/resources"
 JAVA_SRC_DIR=(
 	testng-asserts/src/main/java
@@ -103,7 +104,6 @@ src_test() {
 
 src_install() {
 	java-pkg-simple_src_install
-	java-pkg_dolauncher ${PN} --main org.testng.TestNG
 
 	java-pkg_newjar "${DISTDIR}/jquery-${JQV}.jar" jquery.jar
 	java-pkg_regjar "${ED}/usr/share/${PN}/lib/jquery.jar"
