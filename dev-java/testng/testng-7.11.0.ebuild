@@ -14,9 +14,9 @@ HOMEPAGE="https://testng.org/"
 JQV="3.7.1"
 # Currently we bundle the binary versions of spock-core, groovy-all and apache-groovy-binary.
 # These are used only for tests, we don't install them.
-SCV="1.0-groovy-2.4"
-GAV="2.4.7"
 AGV="2.4.21"
+GAV="2.4.7"
+SCV="1.0-groovy-2.4"
 SRC_URI="https://github.com/testng-team/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz
 	https://repo1.maven.org/maven2/org/webjars/jquery/${JQV}/jquery-${JQV}.jar
 	test? (
@@ -27,8 +27,10 @@ SRC_URI="https://github.com/testng-team/${PN}/archive/${PV}.tar.gz -> ${P}.tar.g
 S="${WORKDIR}/${P}"
 
 LICENSE="Apache-2.0"
-KEYWORDS="~amd64 ~arm64 ~ppc64"
 SLOT="0"
+KEYWORDS="~amd64 ~arm64 ~ppc64"
+
+BDEPEND="app-arch/unzip"
 
 CP_DEPEND="
 	>=dev-java/ant-1.10.15:0
@@ -40,19 +42,21 @@ CP_DEPEND="
 	>=dev-java/snakeyaml-2.5:2
 "
 
-DEPEND="${CP_DEPEND}
+DEPEND="
+	${CP_DEPEND}
 	>=virtual/jdk-11:*
 	test? (
 		>=dev-java/assertj-core-3.27.6:0
 		>=dev-java/guava-33.5.0:0
-	)"
+	)
+"
 
 # reason: '<>' with anonymous inner classes is not supported in -source 8
 #   (use -source 9 or higher to enable '<>' with anonymous inner classes)
-RDEPEND="${CP_DEPEND}
-	>=virtual/jre-11:*"
-
-BDEPEND="app-arch/unzip"
+RDEPEND="
+	${CP_DEPEND}
+	>=virtual/jre-11:*
+"
 
 DOCS=( README.md {ANNOUNCEMENT,CHANGES}.txt )
 
