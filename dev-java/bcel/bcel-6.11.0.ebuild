@@ -32,20 +32,6 @@ RDEPEND="${CP_DEPEND}
 
 DOCS=( NOTICE.txt RELEASE-NOTES.txt )
 
+JAVA_INTERMEDIATE_JAR_NAME="org.apache.${PN/-/.}"
+JAVA_MODULE_INFO_OUT="src/main"
 JAVA_SRC_DIR="src/main/java"
-
-src_compile() {
-	JAVA_JAR_FILENAME="org.apache.${PN}.jar"
-	java-pkg-simple_src_compile	# creates a legacy jar file without module-info
-
-	jdeps \
-		--module-path "$(java-pkg_getjars commons-lang,commons-io)" \
-		--add-modules org.apache.commons.lang3 \
-		--generate-module-info \
-		src/main/java \
-		--multi-release 9 \
-		"${JAVA_JAR_FILENAME}" || die
-
-	JAVA_JAR_FILENAME="${PN}.jar"
-	java-pkg-simple_src_compile	# creates the final jar file including module-info
-}
