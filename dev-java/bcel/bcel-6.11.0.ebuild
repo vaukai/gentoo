@@ -5,7 +5,6 @@ EAPI=8
 
 JAVA_PKG_IUSE="doc source test"
 JAVA_TESTING_FRAMEWORKS="junit-jupiter"
-MAVEN_ID="org.apache.bcel:bcel:6.10.0"
 
 inherit java-pkg-2 java-pkg-simple junit5 verify-sig
 
@@ -59,13 +58,13 @@ KEYWORDS="~amd64 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
 #  *   jdeps failed
 RESTRICT="test"
 
-VERIFY_SIG_OPENPGP_KEY_PATH="/usr/share/openpgp-keys/ggregory.asc"
 BDEPEND="verify-sig? ( sec-keys/openpgp-keys-ggregory )"
 CP_DEPEND="
 	>=dev-java/commons-io-2.20.0:0
 	>=dev-java/commons-lang-3.19.0:0
 "
-DEPEND="${CP_DEPEND}
+DEPEND="
+	${CP_DEPEND}
 	>=virtual/jdk-11:*
 	test? (
 		>=dev-java/asm-9.9:0
@@ -78,9 +77,12 @@ DEPEND="${CP_DEPEND}
 		>=dev-java/mockito-5.20.0:0
 		>=dev-java/opentest4j-1.3.0-r1:0
 		>=dev-java/wsdl4j-1.6.3:0
-	)"
-RDEPEND="${CP_DEPEND}
-	>=virtual/jre-1.8:*"
+	)
+"
+RDEPEND="
+	${CP_DEPEND}
+	>=virtual/jre-1.8:*
+"
 
 DOCS=( NOTICE.txt RELEASE-NOTES.txt )
 PATCHES=( "${FILESDIR}/bcel-6.11.0-VerifierTest.patch" )
@@ -96,6 +98,7 @@ JAVA_SRC_DIR="src/main/java"
 JAVA_TEST_GENTOO_CLASSPATH="asm byte-buddy eclipse-ecj-4.37 commons-collections-4 jmh-core jna junit-5 jsr305 mockito opentest4j"
 JAVA_TEST_RESOURCE_DIRS="src/test/resources"
 JAVA_TEST_SRC_DIR="src/test/java"
+VERIFY_SIG_OPENPGP_KEY_PATH="/usr/share/openpgp-keys/ggregory.asc"
 
 src_prepare() {
 	default # bug #780585
