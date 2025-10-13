@@ -19,8 +19,8 @@ LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x64-solaris"
 
-VERIFY_SIG_OPENPGP_KEY_PATH="/usr/share/openpgp-keys/commons.apache.org.asc"
-BDEPEND="verify-sig? ( sec-keys/openpgp-keys-apache-commons )"
+VERIFY_SIG_OPENPGP_KEY_PATH="/usr/share/openpgp-keys/ggregory.asc"
+BDEPEND="verify-sig? ( sec-keys/openpgp-keys-ggregory )"
 CP_DEPEND="
 	>=dev-java/commons-io-2.20.0:0
 	>=dev-java/commons-lang-3.19.0:0
