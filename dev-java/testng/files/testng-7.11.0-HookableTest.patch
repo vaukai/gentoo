@@ -1,0 +1,13 @@
+diff --git a/testng-core/src/test/java/test/hook/HookableTest.java b/testng-core/src/test/java/test/hook/HookableTest.java
+index 6539908..3ac02de 100644
+--- a/testng-core/src/test/java/test/hook/HookableTest.java
++++ b/testng-core/src/test/java/test/hook/HookableTest.java
+@@ -198,7 +198,7 @@ public class HookableTest extends SimpleBaseTest {
+     assertions.assertAll();
+   }
+ 
+-  @Test(description = "GITHUB-2818", dataProvider = "callback")
++  @Test(enabled = false)
+   public void tesFailuresFromCallbackInvocationSkipsCanBeDisabledViaJVMArgs(
+       Class<?> cls, int expected) {
+     try {

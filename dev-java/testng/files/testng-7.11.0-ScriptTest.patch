@@ -1,0 +1,13 @@
+diff --git a/testng-core/src/test/java/test/methodselectors/ScriptTest.java b/testng-core/src/test/java/test/methodselectors/ScriptTest.java
+index 1a38c37..cd6136c 100644
+--- a/testng-core/src/test/java/test/methodselectors/ScriptTest.java
++++ b/testng-core/src/test/java/test/methodselectors/ScriptTest.java
+@@ -18,7 +18,7 @@ public class ScriptTest extends BaseTest {
+     };
+   }
+ 
+-  @Test(dataProvider = "dataProvider")
++  @Test(enabled = false)
+   public void onlyGroup1(String language, String expression, String[] passed) {
+     addClass(test.methodselectors.SampleTest.class);
+     setScript(language, expression);

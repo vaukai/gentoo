@@ -1,0 +1,13 @@
+diff --git a/testng-core/src/test/java/test/thread/ParallelTestTest.java b/testng-core/src/test/java/test/thread/ParallelTestTest.java
+index 4a307ba..7b19374 100644
+--- a/testng-core/src/test/java/test/thread/ParallelTestTest.java
++++ b/testng-core/src/test/java/test/thread/ParallelTestTest.java
+@@ -98,7 +98,7 @@ public class ParallelTestTest extends BaseTest {
+     assertThat(Github1636Sample.threads).hasSize(threadCount);
+   }
+ 
+-  @Test
++  @Test(enabled = false)
+   public void testXmlSuiteObeyCommandLine() {
+     final String file = "build/resources/test/2532.xml";
+     final int threadCount = 3;

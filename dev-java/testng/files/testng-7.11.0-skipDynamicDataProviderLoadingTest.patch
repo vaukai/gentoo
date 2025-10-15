@@ -1,0 +1,13 @@
+197 [main] ERROR org.testng.TestNG -
+Cannot find class in classpath: org.testng.dataprovider.DynamicDataProviderLoadingTest
+
+--- a/testng-core/src/test/resources/testng.xml
++++ b/testng-core/src/test/resources/testng.xml
+@@ -971,7 +971,6 @@
+   <test name="Kotlin">
+     <classes>
+       <class name="org.testng.BasicTest"/>
+-      <class name="org.testng.dataprovider.DynamicDataProviderLoadingTest" />
+     </classes>
+   </test>
+ </suite>
