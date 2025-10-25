@@ -32,6 +32,7 @@ RDEPEND=">=virtual/jre-1.8:*"
 JAVADOC_CLASSPATH="asm"
 JAVADOC_SRC_DIRS=( {accessors,json}-smart/src/main/java )
 JAVA_TEST_GENTOO_CLASSPATH="junit-5 opentest4j"
+JAVA_TEST_SRC_DIR=( {accessors,jsom}-smart/src/test/java )
 
 src_compile() {
 	einfo "Compiling accessors-smart.jar"
@@ -50,14 +51,6 @@ src_compile() {
 	rm -r target || die
 
 	use doc && ejavadoc
-}
-
-src_test() {
-	JAVA_TEST_SRC_DIR="accessors-smart/src/test/java"
-	junit5_src_test
-
-	JAVA_TEST_SRC_DIR="json-smart/src/test/java"
-	junit5_src_test
 }
 
 src_install() {
